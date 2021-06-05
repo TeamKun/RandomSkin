@@ -1,5 +1,5 @@
-name: Plugin
+name: RandomSkin
 version: ${project.version}
 api-version: 1.16
 author: Kei
-main: net.kunmc.lab.pluginname.Test
+main: net.kunmc.lab.randomskin.RandomSkin
