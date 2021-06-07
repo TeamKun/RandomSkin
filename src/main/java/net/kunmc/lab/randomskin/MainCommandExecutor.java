@@ -3,11 +3,16 @@ package net.kunmc.lab.randomskin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
-public class MainCommandExecutor implements CommandExecutor {
+public class MainCommandExecutor implements CommandExecutor, TabCompleter {
     /**
      * Executes the given command, returning its success.
      * <br>
@@ -28,5 +33,23 @@ public class MainCommandExecutor implements CommandExecutor {
         String str = k ? "有効" : "無効";
         Kei.sm(sender, "RandomSkinを" + str + "化しました。");
         return true;
+    }
+
+    /**
+     * Requests a list of possible completions for a command argument.
+     *
+     * @param sender  Source of the command.  For players tab-completing a
+     *                command inside of a command block, this will be the player, not
+     *                the command block.
+     * @param command Command which was executed
+     * @param alias   The alias used
+     * @param args    The arguments passed to the command, including final
+     *                partial argument to be completed and command label
+     * @return A List of possible completions for the final argument, or null
+     * to default to the command executor
+     */
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+        return Collections.singletonList("");
     }
 }
