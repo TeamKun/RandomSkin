@@ -96,7 +96,7 @@ public class RandomManager {
         }
     }
 
-    boolean enabled = false;
+    public boolean enabled = false;
 
     public static Map<UUID, String> players;
     public static List<String> namelist;
@@ -157,6 +157,7 @@ public class RandomManager {
             NickAPI.resetNick(p);
             NickAPI.resetSkin(p);
             NickAPI.resetUniqueId(p);
+            NickAPI.resetGameProfileName(p);
             NickAPI.resetGameProfileName(p);
             NickAPI.refreshPlayer(p);
             return;

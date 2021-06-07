@@ -1,5 +1,7 @@
 package net.kunmc.lab.randomskin;
 
+import net.kunmc.lab.randomskin.event.AsyncChatEventListener;
+import net.kunmc.lab.randomskin.event.CommandPreprocessEventListener;
 import net.kunmc.lab.randomskin.event.JoinEventListener;
 import org.bukkit.Sound;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -88,6 +90,8 @@ public final class RandomSkin extends JavaPlugin {
     public void onEnable() {
         rm = new RandomManager(this);
         Kei.a(new JoinEventListener(), this);
+        Kei.a(new AsyncChatEventListener(), this);
+        Kei.a(new CommandPreprocessEventListener(), this);
         Kei.a("rs", new MainCommandExecutor());
     }
 
