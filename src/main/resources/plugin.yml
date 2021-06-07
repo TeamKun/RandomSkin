@@ -1,9 +1,0 @@
-name: RandomSkin
-version: ${project.version}
-main: net.kunmc.lab.randomskin.RandomSkin
-api-version: 1.16
-depend:
-  - NickNamerAPI
-authors: [ Kei ]
-commands:
-  rs:
