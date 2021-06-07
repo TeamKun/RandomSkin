@@ -89,6 +89,7 @@ public final class RandomSkin extends JavaPlugin {
     @Override
     public void onEnable() {
         rm = new RandomManager(this);
+        Kei.z(this);
         Kei.a(new JoinEventListener(), this);
         Kei.a(new AsyncChatEventListener(), this);
         Kei.a(new CommandPreprocessEventListener(), this);

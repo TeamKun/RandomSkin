@@ -111,7 +111,7 @@ public class RandomManager {
     }
 
     public void reloadName() {
-        namelist = Kei.a(new File(plugin.getDataFolder() + File.separator + "name.txt"));
+        namelist = plugin.getConfig().getStringList("name");
         Kei.out("loaded names: " + namelist.size());
     }
 
