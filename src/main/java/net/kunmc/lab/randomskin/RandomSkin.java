@@ -94,6 +94,7 @@ public final class RandomSkin extends JavaPlugin {
         Kei.a(new AsyncChatEventListener(), this);
         Kei.a(new CommandPreprocessEventListener(), this);
         Kei.a("rs", new MainCommandExecutor());
+        Kei.a("rset", new SetCommandExecutor());
     }
 
     @Override

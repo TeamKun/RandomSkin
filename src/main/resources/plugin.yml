@@ -7,3 +7,4 @@ depend:
 authors: [ Kei ]
 commands:
   rs:
+  rset:

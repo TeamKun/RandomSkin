@@ -1,7 +1,4 @@
 package net.kunmc.lab.randomskin;
-
-import org.bukkit.Sound;
-
 public class Kei {
     private static class cc {
         private static org.bukkit.ChatColor red = org.bukkit.ChatColor.RED;
@@ -76,9 +73,11 @@ public class Kei {
     }
 
     private static class sound {
-        private void levelup(org.bukkit.entity.Player p, int vol){p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, vol, 0f);}
+        private void levelup(org.bukkit.entity.Player p, int vol){p.playSound(p.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, vol, 0f);}
     }
-
+    public net.md_5.bungee.api.ChatColor hc(String hc){
+        return net.md_5.bungee.api.ChatColor.of(hc);
+    }
     /**
      * Ez itemstack gen
      * @param m material
