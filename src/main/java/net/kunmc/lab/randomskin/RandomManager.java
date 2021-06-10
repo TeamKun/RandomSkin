@@ -100,6 +100,7 @@ public class RandomManager {
 
     public static Map<UUID, String> players;
     public static List<String> namelist;
+    public static List<UUID> without;
 
     public static RandomSkin plugin;
     int c = 0;
@@ -108,6 +109,7 @@ public class RandomManager {
         plugin = rs;
         players = new HashMap<>();
         namelist = new ArrayList<>();
+        without = new ArrayList<>();
     }
 
     public void reloadName() {
@@ -131,10 +133,33 @@ public class RandomManager {
         Collections.shuffle(namelist);
         for (Player p : Bukkit.getOnlinePlayers()) {
             players.put(p.getUniqueId(), namelist.get(c));
-            Kei.psm(p, "あなたは" + namelist.get(c) + "に変身しました。");
-            setDummy(p, players.get(p.getUniqueId()));
+            if(!without.contains(p.getUniqueId())) {
+                Kei.psm(p, "あなたは" + namelist.get(c) + "に変身しました。");
+                setDummy(p, players.get(p.getUniqueId()));
+            }
             c += 1;
         }
+    }
+
+    public boolean toggleWithout(Player p){
+        if(without.contains(p.getUniqueId())){
+            without.remove(p.getUniqueId());
+            check(p);
+            return false;
+        } else {
+            without.add(p.getUniqueId());
+            check(p);
+            return true;
+        }
+    }
+
+    public void setWithout(Player p, boolean bool){
+        if(bool){
+            without.remove(p.getUniqueId());
+        } else {
+            without.add(p.getUniqueId());
+        }
+        check(p);
     }
 
     public void clearAll() {
@@ -164,11 +189,29 @@ public class RandomManager {
         }
         if (!players.containsKey(p.getUniqueId())) {
             players.put(p.getUniqueId(), namelist.get(c));
-            Kei.psm(p, "あなたは" + namelist.get(c) + "に変身しました。");
-            setDummy(p, players.get(p.getUniqueId()));
+            if(!without.contains(p.getUniqueId())) {
+                setDummy(p, players.get(p.getUniqueId()));
+                Kei.psm(p, "あなたは" + namelist.get(c) + "に変身しました。");
+            } else {
+                NickAPI.resetNick(p);
+                NickAPI.resetSkin(p);
+                NickAPI.resetUniqueId(p);
+                NickAPI.resetGameProfileName(p);
+                NickAPI.resetGameProfileName(p);
+                NickAPI.refreshPlayer(p);
+            }
             c += 1;
         } else {
-            setDummy(p, players.get(p.getUniqueId()));
+            if(!without.contains(p.getUniqueId())) {
+                setDummy(p, players.get(p.getUniqueId()));
+            } else {
+                NickAPI.resetNick(p);
+                NickAPI.resetSkin(p);
+                NickAPI.resetUniqueId(p);
+                NickAPI.resetGameProfileName(p);
+                NickAPI.resetGameProfileName(p);
+                NickAPI.refreshPlayer(p);
+            }
         }
     }
 
