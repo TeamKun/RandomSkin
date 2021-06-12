@@ -8,6 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.haoshoku.nick.api.NickAPI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,14 +31,14 @@ public class SetCommandExecutor implements org.bukkit.command.CommandExecutor, T
      */
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(Kei.pexc(sender)) return true;
-        if(Kei.agc(args, 1)){
+        if (Kei.pexc(sender)) return true;
+        if (Kei.agc(args, 1)) {
             sender.sendMessage("切り替えをするプレイヤーを選択してください。");
             sender.sendMessage("e.g. /rset <@a|@r|@e|@p|@s / name> <on / off>");
             sender.sendMessage("e.g. /rset list 現在の状態を表示する");
             return true;
-        } else if(Kei.agc(args, 2)) {
-            if("list".equals(args[0])){
+        } else if (Kei.agc(args, 2)) {
+            if ("list".equals(args[0])) {
                 Kei.sm(sender,
                         "--- 現在の状態 ---",
                         "全体のスキン変更： " + (RandomSkin.rm.enabled ? "有効" : "無効"),
@@ -45,47 +46,123 @@ public class SetCommandExecutor implements org.bukkit.command.CommandExecutor, T
                         "無効されているプレイヤー数： " + RandomSkin.rm.without.size(),
                         "詳しくは/rset disablelist");
                 return true;
-            } else if("disablelist".equals(args[0])){
+            } else if ("disablelist".equals(args[0])) {
                 Kei.sm(sender, "無効化されているプレイヤー: ");
-                for(UUID uid : RandomSkin.rm.without){
+                for (UUID uid : RandomSkin.rm.without) {
                     Kei.sm(sender, Bukkit.getOfflinePlayer(uid).getName());
                 }
                 return true;
             }
             String selector = args[0];
-            List<Entity> entityList = Bukkit.selectEntities(sender, args[0]);
-            int count = 0;
-            for (Entity entity : entityList) {
-                if (entity instanceof Player) {
-                    count += 1;
-                    boolean bool = !RandomSkin.rm.toggleWithout((Player) entity);
-                    String status = bool ? "有効" : "無効";
-                    Kei.psm((Player) entity, "あなたのスキン変更は" + status + "化されました。");
+            List<Entity> entityList;
+            boolean nicked = false;
+            boolean at = false;
+            if (selector.startsWith("@") && !selector.equals("@")) {
+                entityList = Bukkit.selectEntities(sender, args[0]);
+                at = true;
+            } else {
+                if (NickAPI.isNickedName(selector)) {
+                    entityList = Collections.singletonList(NickAPI.getPlayerOfNickedName(selector));
+                    nicked = true;
+                } else {
+                    entityList = new ArrayList<>();
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        if (p.getName().equals(selector)) {
+                            entityList.add(p);
+                            break;
+                        }
+                    }
                 }
             }
-            Kei.sm(sender, count + "人のスキンの変更状態を切り替えました。");
-            return true;
-        } else if(Kei.agc(args, 3)){
+            if (entityList == null || entityList.isEmpty() || entityList.size() < 1) {
+                Kei.sm(sender, "対象のエンティティがみつかりませんでした。");
+                return true;
+            }
+            int count = 0;
+            if (at) {
+                for (Entity entity : entityList) {
+                    if (entity instanceof Player) {
+                        count += 1;
+                        boolean bool = !RandomSkin.rm.toggleWithout((Player) entity);
+                        String status = bool ? "有効" : "無効";
+                        Kei.psm((Player) entity, "あなたのスキン変更は" + status + "化されました。");
+                    }
+                }
+                Kei.sm(sender, count + "人のスキンの変更状態を切り替えました。");
+                return true;
+            } else {
+                if (nicked) {
+                    boolean bool = !RandomSkin.rm.toggleWithout((Player) entityList.get(0));
+                    String status = bool ? "有効" : "無効";
+                    Kei.psm((Player) entityList.get(0), "あなたのスキン変更は" + status + "化されました。");
+                    Kei.sm(sender, "1人のスキンの変更状態を切り替えました。");
+                    return true;
+                } else {
+                    boolean bool = !RandomSkin.rm.toggleWithout((Player) entityList.get(0));
+                    String status = bool ? "有効" : "無効";
+                    Kei.psm((Player) entityList.get(0), "あなたのスキン変更は" + status + "化されました。");
+                    Kei.sm(sender, "1人のスキンの変更状態を切り替えました。");
+                    return true;
+                }
+            }
+        } else if (Kei.agc(args, 3)) {
             String selector = args[0];
-            if(!("on".equals(args[1]) || "off".equals(args[1]))){
+            if (!("on".equals(args[1]) || "off".equals(args[1]))) {
                 sender.sendMessage("on 又は off で選択してください。");
                 sender.sendMessage("e.g. /rset <@a|@r|@e|@p|@s / name> <on / off>");
                 sender.sendMessage("e.g. /rset list 現在の状態を表示する");
                 return true;
             }
             boolean enable = "on".equals(args[1]);
-            List<Entity> entityList = Bukkit.selectEntities(sender, args[0]);
-            int count = 0;
             String status = enable ? "有効" : "無効";
-            for(Entity entity : entityList){
-                if(entity instanceof Player){
-                    count += 1;
-                    RandomSkin.rm.setWithout((Player) entity, enable);
-                    Kei.psm((Player) entity, "あなたのスキン変更は" + status + "化されました。");
+            List<Entity> entityList;
+            boolean nicked = false;
+            boolean at = false;
+            if (selector.startsWith("@") && !selector.equals("@")) {
+                entityList = Bukkit.selectEntities(sender, args[0]);
+                at = true;
+            } else {
+                if (NickAPI.isNickedName(selector)) {
+                    entityList = Collections.singletonList(NickAPI.getPlayerOfNickedName(selector));
+                    nicked = true;
+                } else {
+                    entityList = new ArrayList<>();
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        if (p.getName().equals(selector)) {
+                            entityList.add(p);
+                            break;
+                        }
+                    }
                 }
             }
-            Kei.sm(sender, count + "人のスキンの変更を" + status + "化しました。");
-            return true;
+            if (entityList == null || entityList.isEmpty() || entityList.size() < 1) {
+                Kei.sm(sender, "対象のエンティティがみつかりませんでした。");
+                return true;
+            }
+            int count = 0;
+            if (at) {
+                for (Entity entity : entityList) {
+                    if (entity instanceof Player) {
+                        count += 1;
+                        RandomSkin.rm.setWithout((Player) entity, enable);
+                        Kei.psm((Player) entity, "あなたのスキン変更は" + status + "化されました。");
+                    }
+                }
+                Kei.sm(sender, count + "人のスキンの変更状態を切り替えました。");
+                return true;
+            } else {
+                if (nicked) {
+                    RandomSkin.rm.setWithout((Player) entityList.get(0), enable);
+                    Kei.psm((Player) entityList.get(0), "あなたのスキン変更は" + status + "化されました。");
+                    Kei.sm(sender, "1人のスキンの変更状態を切り替えました。");
+                    return true;
+                } else {
+                    RandomSkin.rm.setWithout((Player) entityList.get(0), enable);
+                    Kei.psm((Player) entityList.get(0), "あなたのスキン変更は" + status + "化されました。");
+                    Kei.sm(sender, "1人のスキンの変更状態を切り替えました。");
+                    return true;
+                }
+            }
         } else {
             sender.sendMessage("切り替えをするプレイヤーを選択してください。");
             sender.sendMessage("e.g. /rset <@a|@r|@e|@p|@s / name> <on / off>");
@@ -116,9 +193,10 @@ public class SetCommandExecutor implements org.bukkit.command.CommandExecutor, T
             dummy.add("@e");
             dummy.add("@r");
             dummy.add("@s");
-            //Arrays.asList("@a", "@p", "@e", "@r", "@s");
+            dummy.add("list");
+            dummy.add("disablelist");
             for (Player p : Bukkit.getOnlinePlayers()) {
-                dummy.add(p.getName());
+                dummy.add(NickAPI.getName(p));
             }
             return dummy;
         } else if (Kei.agc(args, 2)) {
@@ -131,9 +209,8 @@ public class SetCommandExecutor implements org.bukkit.command.CommandExecutor, T
             dummy.add("@s");
             dummy.add("list");
             dummy.add("disablelist");
-            //Arrays.asList("@a", "@p", "@e", "@r", "@s");
             for (Player p : Bukkit.getOnlinePlayers()) {
-                dummy.add(p.getName());
+                dummy.add(NickAPI.getName(p));
             }
             for (String s : dummy) {
                 if (s.startsWith(args[0])) r.add(s);
@@ -141,7 +218,7 @@ public class SetCommandExecutor implements org.bukkit.command.CommandExecutor, T
             return r;
         } else if (Kei.agc(args, 3)) {
             List<String> r = new ArrayList<>();
-            if(args[1] == null){
+            if (args[1] == null) {
                 return Arrays.asList("on", "off");
             }
             for (String s : Arrays.asList("on", "off")) {
