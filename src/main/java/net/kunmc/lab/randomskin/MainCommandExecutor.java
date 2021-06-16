@@ -32,6 +32,7 @@ public class MainCommandExecutor implements CommandExecutor, TabCompleter {
         boolean k = RandomSkin.rm.enabled;
         String str = k ? "有効" : "無効";
         Kei.sm(sender, "RandomSkinを" + str + "化しました。");
+        RTablist.update();
         return true;
     }
 

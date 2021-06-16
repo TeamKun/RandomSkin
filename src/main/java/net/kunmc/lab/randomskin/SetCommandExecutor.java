@@ -89,6 +89,7 @@ public class SetCommandExecutor implements org.bukkit.command.CommandExecutor, T
                     }
                 }
                 Kei.sm(sender, count + "人のスキンの変更状態を切り替えました。");
+                RTablist.update();
                 return true;
             } else {
                 if (nicked) {
@@ -96,12 +97,14 @@ public class SetCommandExecutor implements org.bukkit.command.CommandExecutor, T
                     String status = bool ? "有効" : "無効";
                     Kei.psm((Player) entityList.get(0), "あなたのスキン変更は" + status + "化されました。");
                     Kei.sm(sender, "1人のスキンの変更状態を切り替えました。");
+                    RTablist.update();
                     return true;
                 } else {
                     boolean bool = !RandomSkin.rm.toggleWithout((Player) entityList.get(0));
                     String status = bool ? "有効" : "無効";
                     Kei.psm((Player) entityList.get(0), "あなたのスキン変更は" + status + "化されました。");
                     Kei.sm(sender, "1人のスキンの変更状態を切り替えました。");
+                    RTablist.update();
                     return true;
                 }
             }
@@ -149,17 +152,20 @@ public class SetCommandExecutor implements org.bukkit.command.CommandExecutor, T
                     }
                 }
                 Kei.sm(sender, count + "人のスキンの変更状態を切り替えました。");
+                RTablist.update();
                 return true;
             } else {
                 if (nicked) {
                     RandomSkin.rm.setWithout((Player) entityList.get(0), enable);
                     Kei.psm((Player) entityList.get(0), "あなたのスキン変更は" + status + "化されました。");
                     Kei.sm(sender, "1人のスキンの変更状態を切り替えました。");
+                    RTablist.update();
                     return true;
                 } else {
                     RandomSkin.rm.setWithout((Player) entityList.get(0), enable);
                     Kei.psm((Player) entityList.get(0), "あなたのスキン変更は" + status + "化されました。");
                     Kei.sm(sender, "1人のスキンの変更状態を切り替えました。");
+                    RTablist.update();
                     return true;
                 }
             }

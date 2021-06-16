@@ -85,9 +85,11 @@ public final class RandomSkin extends JavaPlugin {
     }
 
     public static RandomManager rm;
+    static RandomSkin instance;
 
     @Override
     public void onEnable() {
+        instance = this;
         rm = new RandomManager(this);
         Kei.z(this);
         Kei.a(new JoinEventListener(), this);
@@ -95,6 +97,8 @@ public final class RandomSkin extends JavaPlugin {
         Kei.a(new CommandPreprocessEventListener(), this);
         Kei.a("rs", new MainCommandExecutor());
         Kei.a("rset", new SetCommandExecutor());
+
+        new RTablist();
     }
 
     @Override

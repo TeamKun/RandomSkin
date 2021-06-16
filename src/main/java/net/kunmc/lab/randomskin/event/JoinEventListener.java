@@ -1,5 +1,6 @@
 package net.kunmc.lab.randomskin.event;
 
+import net.kunmc.lab.randomskin.RTablist;
 import net.kunmc.lab.randomskin.RandomSkin;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -89,5 +90,6 @@ public class JoinEventListener implements Listener {
     public void on(PlayerJoinEvent e){
         Player p = e.getPlayer();
         RandomSkin.rm.check(p);
+        if(RandomSkin.rm.enabled) RTablist.update();
     }
 }
